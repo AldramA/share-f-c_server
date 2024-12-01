@@ -43,7 +43,7 @@ async function loadItems() {
                 ${item.text ? `
                     <div class="message-container">
                         <p class="message-text">${item.text.replace(/\n/g, '<br>')}</p>
-                        <button class="copy-button" onclick="copyText('${item.text.replace(/'/g, "\\'")}')">
+                        <button class="copy-button" data-text="${encodeURIComponent(item.text)}">
                             <span class="copy-icon">📋</span>
                             <span class="copy-tooltip">Copy</span>
                         </button>
@@ -60,6 +60,54 @@ async function loadItems() {
                 <div class="timestamp">${new Date(item.timestamp).toLocaleString()}</div>
             </div>
         `).join('');
+
+        // Add click event listeners to copy buttons
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', async function() {
+                const textToCopy = decodeURIComponent(this.dataset.text);
+                const tooltip = this.querySelector('.copy-tooltip');
+
+                try {
+                    // Try modern clipboard API first
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(textToCopy);
+                        showTooltip(tooltip, 'Copied!');
+                    } else {
+                        // Fallback for mobile and non-HTTPS
+                        const textArea = document.createElement('textarea');
+                        textArea.value = textToCopy;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+
+                        try {
+                            document.execCommand('copy');
+                            textArea.remove();
+                            showTooltip(tooltip, 'Copied!');
+                        } catch (err) {
+                            console.error('Fallback: Oops, unable to copy', err);
+                            showTooltip(tooltip, 'Press & hold to copy');
+                            textArea.remove();
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to copy text:', err);
+                    showTooltip(tooltip, 'Press & hold to copy');
+                }
+            });
+        });
+
+        // Helper function to show tooltip message
+        function showTooltip(tooltip, message) {
+            tooltip.textContent = message;
+            setTimeout(() => {
+                tooltip.textContent = 'Copy';
+            }, 2000);
+        }
+
         document.getElementById('status').textContent = 'Items loaded successfully';
     } catch (error) {
         console.error('Error loading items:', error);
