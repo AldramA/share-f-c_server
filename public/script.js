@@ -40,7 +40,15 @@ async function loadItems() {
         const itemsList = document.getElementById('itemsList');
         itemsList.innerHTML = items.map(item => `
             <div class="item">
-                ${item.text ? `<p class="message-text">${item.text.replace(/\n/g, '<br>')}</p>` : ''}
+                ${item.text ? `
+                    <div class="message-container">
+                        <p class="message-text">${item.text.replace(/\n/g, '<br>')}</p>
+                        <button class="copy-button" onclick="copyText('${item.text.replace(/'/g, "\\'")}')">
+                            <span class="copy-icon">📋</span>
+                            <span class="copy-tooltip">Copy</span>
+                        </button>
+                    </div>
+                ` : ''}
                 ${item.file ? `
                     <div class="file-info">
                         <a href="${item.file.dataUrl}" download="${item.file.name}" class="download-link">
@@ -56,6 +64,25 @@ async function loadItems() {
     } catch (error) {
         console.error('Error loading items:', error);
         document.getElementById('status').textContent = 'Error loading items';
+    }
+}
+
+// Function to copy text to clipboard
+async function copyText(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        const tooltip = document.activeElement.querySelector('.copy-tooltip');
+        tooltip.textContent = 'Copied!';
+        setTimeout(() => {
+            tooltip.textContent = 'Copy';
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy text:', err);
+        const tooltip = document.activeElement.querySelector('.copy-tooltip');
+        tooltip.textContent = 'Failed to copy';
+        setTimeout(() => {
+            tooltip.textContent = 'Copy';
+        }, 2000);
     }
 }
 

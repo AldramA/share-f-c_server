@@ -106,13 +106,65 @@ input[type="file"] {
     color: var(--bg-color);
 }
 
+.message-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
 .message-text {
+    flex: 1;
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: 'Courier New', monospace;
     margin: 0;
     padding: 5px 0;
     line-height: 1.5;
+}
+
+.copy-button {
+    position: relative;
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.copy-button:hover {
+    opacity: 1;
+    background: none;
+    color: inherit;
+}
+
+.copy-icon {
+    font-size: 1.2em;
+}
+
+.copy-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    background-color: var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.copy-button:hover .copy-tooltip {
+    opacity: 1;
+}
+
+.copy-button:focus .copy-tooltip {
+    opacity: 1;
 }
 
 textarea {
