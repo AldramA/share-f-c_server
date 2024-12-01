@@ -1,9 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const os = require('os');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Get local IP addresses
+function getLocalIPs() {
+    const interfaces = os.networkInterfaces();
+    const addresses = [];
+    
+    for (const interfaceName in interfaces) {
+        const interface = interfaces[interfaceName];
+        for (const address of interface) {
+            // Skip internal and non-IPv4 addresses
+            if (!address.internal && address.family === 'IPv4') {
+                addresses.push(address.address);
+            }
+        }
+    }
+    return addresses;
+}
 
 // Middleware
 app.use(bodyParser.json({limit: '50mb'}));
@@ -39,6 +57,17 @@ app.get('/items', (req, res) => {
     res.json(sharedItems);
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+// Start server
+app.listen(port, '0.0.0.0', () => {
+    console.log(`\nServer is running on:`);
+    console.log(`- Local: http://localhost:${port}`);
+    
+    // Display all available IP addresses
+    const localIPs = getLocalIPs();
+    localIPs.forEach(ip => {
+        console.log(`- Network: http://${ip}:${port}`);
+    });
+    
+    console.log('\nUse any of these addresses to connect to the server');
+    console.log('To make it accessible from other devices, use the Network address');
 });
