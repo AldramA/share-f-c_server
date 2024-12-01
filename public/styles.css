@@ -106,7 +106,18 @@ input[type="file"] {
     color: var(--bg-color);
 }
 
+.message-text {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 5px 0;
+    line-height: 1.5;
+}
+
 textarea {
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
     width: 100%;
     background-color: var(--input-bg);
     color: var(--text-color);
@@ -114,8 +125,8 @@ textarea {
     border-radius: 4px;
     padding: 10px;
     margin: 10px 0;
-    font-family: 'Courier New', monospace;
     resize: vertical;
+    line-height: 1.5;
 }
 
 textarea:focus {

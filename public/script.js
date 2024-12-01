@@ -40,7 +40,7 @@ async function loadItems() {
         const itemsList = document.getElementById('itemsList');
         itemsList.innerHTML = items.map(item => `
             <div class="item">
-                ${item.text ? `<p>${item.text}</p>` : ''}
+                ${item.text ? `<p class="message-text">${item.text.replace(/\n/g, '<br>')}</p>` : ''}
                 ${item.file ? `
                     <div class="file-info">
                         <a href="${item.file.dataUrl}" download="${item.file.name}" class="download-link">
