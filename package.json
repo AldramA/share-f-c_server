@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "canvas": "^2.11.2"
+  },
+  "bin": {
+    "shareF": "./server.js"
   }
 }
